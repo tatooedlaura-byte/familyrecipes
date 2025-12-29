@@ -313,7 +313,11 @@ function saveRecipe() {
 function deleteRecipe() {
     if (!currentRecipeId) return;
 
-    if (confirm('Are you sure you want to delete this recipe?')) {
+    const password = prompt('Enter the family password to delete this recipe:');
+
+    if (password === null) return; // User cancelled
+
+    if (password === FAMILY_PASSWORD) {
         database.ref('recipes/' + currentRecipeId).remove()
             .then(() => {
                 currentRecipeId = null;
@@ -323,6 +327,8 @@ function deleteRecipe() {
             .catch(err => {
                 alert('Error deleting recipe: ' + err.message);
             });
+    } else {
+        alert('Incorrect password. Recipe not deleted.');
     }
 }
 
