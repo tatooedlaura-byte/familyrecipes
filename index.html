@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Recipes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B4513">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+    <!-- Password Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <h1>Family Recipes</h1>
+            <p>Enter the family password</p>
+            <input type="password" id="password-input" placeholder="Password">
+            <button id="login-btn">Enter Kitchen</button>
+            <p id="login-error" class="error"></p>
+        </div>
+    </div>
+
+    <!-- Main Recipe List -->
+    <div id="main-screen" class="screen">
+        <header>
+            <h1>Family Recipes</h1>
+            <button id="add-recipe-btn" class="add-btn">+ Add Recipe</button>
+        </header>
+        <div id="recipe-list" class="recipe-list">
+            <!-- Recipes will be inserted here -->
+        </div>
+    </div>
+
+    <!-- View Recipe Screen -->
+    <div id="view-screen" class="screen">
+        <header>
+            <button id="back-from-view" class="back-btn">&larr; Back</button>
+            <button id="edit-recipe-btn" class="edit-btn">Edit</button>
+        </header>
+        <div class="recipe-view">
+            <div class="recipe-header">
+                <h1 id="view-title">Recipe Title</h1>
+                <p id="view-source" class="source">From: Grandma</p>
+            </div>
+            <div class="cooking-info">
+                <div class="info-box">
+                    <span class="label">Oven</span>
+                    <span id="view-temp" class="value">350°F</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Time</span>
+                    <span id="view-time" class="value">45 min</span>
+                </div>
+            </div>
+            <div class="section">
+                <h2>Ingredients</h2>
+                <ul id="view-ingredients"></ul>
+            </div>
+            <div class="section">
+                <h2>Steps</h2>
+                <ol id="view-steps"></ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Recipe Screen -->
+    <div id="edit-screen" class="screen">
+        <header>
+            <button id="back-from-edit" class="back-btn">&larr; Cancel</button>
+            <button id="save-recipe-btn" class="save-btn">Save</button>
+        </header>
+        <form id="recipe-form" class="recipe-form">
+            <input type="hidden" id="edit-id">
+
+            <label>Recipe Title</label>
+            <input type="text" id="edit-title" required placeholder="Grandma's Apple Pie">
+
+            <label>Source (who shared this?)</label>
+            <input type="text" id="edit-source" placeholder="Grandma, Pinterest, Mom's friend Sue...">
+
+            <div class="cooking-inputs">
+                <div>
+                    <label>Oven Temp</label>
+                    <input type="text" id="edit-temp" placeholder="350°F">
+                </div>
+                <div>
+                    <label>Cook Time</label>
+                    <input type="text" id="edit-time" placeholder="45 minutes">
+                </div>
+            </div>
+
+            <label>Ingredients (one per line)</label>
+            <textarea id="edit-ingredients" rows="8" placeholder="2 cups flour
+1 cup sugar
+3 eggs
+..."></textarea>
+
+            <label>Steps (one per line)</label>
+            <textarea id="edit-steps" rows="10" placeholder="Preheat oven to 350°F
+Mix dry ingredients
+Add wet ingredients
+..."></textarea>
+
+            <button type="button" id="delete-recipe-btn" class="delete-btn">Delete Recipe</button>
+        </form>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
