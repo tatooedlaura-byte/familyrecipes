@@ -16,6 +16,18 @@ const database = firebase.database();
 // App State
 let currentRecipeId = null;
 let recipes = {};
+let currentFilter = 'all';
+
+const categoryInfo = {
+    all: { emoji: '📖', name: 'All Recipes' },
+    breakfast: { emoji: '🥞', name: 'Breakfast' },
+    appetizer: { emoji: '🥗', name: 'Appetizer' },
+    main: { emoji: '🍝', name: 'Main Dish' },
+    side: { emoji: '🥔', name: 'Side Dish' },
+    dessert: { emoji: '🍰', name: 'Dessert' },
+    drink: { emoji: '🥤', name: 'Drink' },
+    snack: { emoji: '🍿', name: 'Snack' }
+};
 
 // Family password - change this to your family password
 const FAMILY_PASSWORD = "recipes123";
@@ -105,15 +117,77 @@ function loadRecipes() {
     });
 }
 
+function getCategoryCounts() {
+    const counts = { all: 0 };
+    Object.values(recipes).forEach(recipe => {
+        counts.all++;
+        if (recipe.category) {
+            counts[recipe.category] = (counts[recipe.category] || 0) + 1;
+        }
+    });
+    return counts;
+}
+
+function renderCategoryFilters() {
+    const filtersEl = document.getElementById('category-filters');
+    const counts = getCategoryCounts();
+
+    const categories = ['all', 'breakfast', 'appetizer', 'main', 'side', 'dessert', 'drink', 'snack'];
+
+    filtersEl.innerHTML = categories.map(cat => {
+        const info = categoryInfo[cat];
+        const count = counts[cat] || 0;
+        const isActive = currentFilter === cat;
+        const isAll = cat === 'all';
+
+        // Only show categories that have recipes (except "all" which always shows)
+        if (!isAll && count === 0) return '';
+
+        return `
+            <button class="category-btn ${isAll ? 'all-btn' : ''} ${isActive ? 'active' : ''}" data-category="${cat}">
+                <span class="emoji">${info.emoji}</span>
+                <span class="name">${info.name}</span>
+                <span class="count">${count} recipe${count !== 1 ? 's' : ''}</span>
+            </button>
+        `;
+    }).join('');
+
+    // Add click handlers
+    filtersEl.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentFilter = btn.dataset.category;
+            renderCategoryFilters();
+            renderRecipeList();
+        });
+    });
+}
+
 function renderRecipeList() {
     const listEl = document.getElementById('recipe-list');
-    const recipeArray = Object.entries(recipes);
+    let recipeArray = Object.entries(recipes);
+
+    // Render category filters first
+    renderCategoryFilters();
 
     if (recipeArray.length === 0) {
         listEl.innerHTML = `
             <div class="empty-state">
                 <p>No recipes yet!</p>
-                <p>Tap "+ Add Recipe" to share your first family recipe.</p>
+                <p>Tap "+ Add" to share your first family recipe.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Filter by category
+    if (currentFilter !== 'all') {
+        recipeArray = recipeArray.filter(([id, recipe]) => recipe.category === currentFilter);
+    }
+
+    if (recipeArray.length === 0) {
+        listEl.innerHTML = `
+            <div class="empty-state">
+                <p>No ${categoryInfo[currentFilter]?.name || currentFilter} recipes yet!</p>
             </div>
         `;
         return;
@@ -125,7 +199,7 @@ function renderRecipeList() {
     listEl.innerHTML = recipeArray.map(([id, recipe]) => `
         <div class="recipe-card" data-id="${id}">
             <h3>${escapeHtml(recipe.title)}</h3>
-            ${recipe.category ? `<span class="category-badge">${escapeHtml(recipe.category.replace('-', ' '))}</span>` : ''}
+            ${recipe.category ? `<span class="category-badge">${escapeHtml(categoryInfo[recipe.category]?.name || recipe.category)}</span>` : ''}
             <p class="source">From: ${escapeHtml(recipe.source || 'Unknown')}</p>
             <div class="quick-info">
                 ${recipe.temp ? `<span>${escapeHtml(recipe.temp)}</span>` : ''}

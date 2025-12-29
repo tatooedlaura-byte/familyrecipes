@@ -173,6 +173,82 @@ header h1 {
     background: #2E7D32;
 }
 
+/* Category Filters */
+.category-filters {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 15px;
+    background: #F5EBE0;
+}
+
+.category-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #E8D4B8;
+    border-radius: 16px;
+    padding: 20px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 90px;
+}
+
+.category-btn:hover {
+    border-color: #8B4513;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.category-btn.active {
+    background: #8B4513;
+    border-color: #8B4513;
+    color: white;
+}
+
+.category-btn .emoji {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.category-btn .name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #5D4037;
+}
+
+.category-btn.active .name {
+    color: white;
+}
+
+.category-btn .count {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 3px;
+}
+
+.category-btn.active .count {
+    color: rgba(255,255,255,0.8);
+}
+
+.category-btn.all-btn {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+    border: none;
+    color: white;
+}
+
+.category-btn.all-btn .name,
+.category-btn.all-btn .count {
+    color: white;
+}
+
+.category-btn.all-btn .count {
+    opacity: 0.8;
+}
+
 /* Recipe List */
 .recipe-list {
     padding: 15px;
