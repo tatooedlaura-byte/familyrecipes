@@ -85,6 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Delete recipe
     document.getElementById('delete-recipe-btn').addEventListener('click', deleteRecipe);
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        sessionStorage.removeItem('familyAuth');
+        currentFilter = 'all';
+        showScreen('login');
+    });
 });
 
 function handleLogin() {
