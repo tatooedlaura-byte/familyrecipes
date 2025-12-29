@@ -303,6 +303,7 @@ function saveRecipe() {
     }
 
     saveRef.then(() => {
+        showToast('Recipe saved!');
         viewRecipe(currentRecipeId);
     }).catch(err => {
         alert('Error saving recipe: ' + err.message);
@@ -316,6 +317,7 @@ function deleteRecipe() {
         database.ref('recipes/' + currentRecipeId).remove()
             .then(() => {
                 currentRecipeId = null;
+                showToast('Recipe deleted');
                 showScreen('main');
             })
             .catch(err => {
@@ -328,6 +330,15 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
 }
 
 // Register service worker for PWA
