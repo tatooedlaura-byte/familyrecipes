@@ -112,6 +112,7 @@ function handleLogin() {
 function showScreen(screenName) {
     Object.values(screens).forEach(screen => screen.classList.remove('active'));
     screens[screenName].classList.add('active');
+    window.scrollTo(0, 0);
 }
 
 function loadRecipes() {
