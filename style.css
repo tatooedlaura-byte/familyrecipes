@@ -179,17 +179,17 @@ header h1 {
 }
 
 .logout-btn {
-    background: rgba(255,255,255,0.2);
+    background: #DC3545;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
 }
 
 .logout-btn:hover {
-    background: rgba(255,255,255,0.3);
+    background: #C82333;
 }
 
 /* Category Filters */
