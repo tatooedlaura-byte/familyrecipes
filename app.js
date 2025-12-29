@@ -208,10 +208,6 @@ function renderRecipeList() {
             <h3>${escapeHtml(recipe.title)}</h3>
             ${recipe.category ? `<span class="category-badge">${escapeHtml(categoryInfo[recipe.category]?.name || recipe.category)}</span>` : ''}
             <p class="source">From: ${escapeHtml(recipe.source || 'Unknown')}</p>
-            <div class="quick-info">
-                ${recipe.temp ? `<span>${escapeHtml(recipe.temp)}</span>` : ''}
-                ${recipe.time ? `<span>${escapeHtml(recipe.time)}</span>` : ''}
-            </div>
         </div>
     `).join('');
 
