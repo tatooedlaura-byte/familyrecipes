@@ -125,6 +125,7 @@ function renderRecipeList() {
     listEl.innerHTML = recipeArray.map(([id, recipe]) => `
         <div class="recipe-card" data-id="${id}">
             <h3>${escapeHtml(recipe.title)}</h3>
+            ${recipe.category ? `<span class="category-badge">${escapeHtml(recipe.category.replace('-', ' '))}</span>` : ''}
             <p class="source">From: ${escapeHtml(recipe.source || 'Unknown')}</p>
             <div class="quick-info">
                 ${recipe.temp ? `<span>${escapeHtml(recipe.temp)}</span>` : ''}
@@ -142,11 +143,22 @@ function renderRecipeList() {
     });
 }
 
+const categoryLabels = {
+    breakfast: 'Breakfast',
+    appetizer: 'Appetizer',
+    main: 'Main Dish',
+    side: 'Side Dish',
+    dessert: 'Dessert',
+    drink: 'Drink',
+    snack: 'Snack'
+};
+
 function viewRecipe(id) {
     currentRecipeId = id;
     const recipe = recipes[id];
 
     document.getElementById('view-title').textContent = recipe.title;
+    document.getElementById('view-category').textContent = recipe.category ? categoryLabels[recipe.category] || recipe.category : '';
     document.getElementById('view-source').textContent = `From: ${recipe.source || 'Unknown'}`;
     document.getElementById('view-temp').textContent = recipe.temp || 'N/A';
     document.getElementById('view-time').textContent = recipe.time || 'N/A';
@@ -169,6 +181,7 @@ function loadRecipeIntoForm(id) {
     document.getElementById('edit-id').value = id;
     document.getElementById('edit-title').value = recipe.title || '';
     document.getElementById('edit-source').value = recipe.source || '';
+    document.getElementById('edit-category').value = recipe.category || '';
     document.getElementById('edit-temp').value = recipe.temp || '';
     document.getElementById('edit-time').value = recipe.time || '';
     document.getElementById('edit-ingredients').value = recipe.ingredients || '';
@@ -179,6 +192,7 @@ function clearForm() {
     document.getElementById('edit-id').value = '';
     document.getElementById('edit-title').value = '';
     document.getElementById('edit-source').value = '';
+    document.getElementById('edit-category').value = '';
     document.getElementById('edit-temp').value = '';
     document.getElementById('edit-time').value = '';
     document.getElementById('edit-ingredients').value = '';
@@ -195,6 +209,7 @@ function saveRecipe() {
     const recipeData = {
         title: title,
         source: document.getElementById('edit-source').value.trim(),
+        category: document.getElementById('edit-category').value,
         temp: document.getElementById('edit-temp').value.trim(),
         time: document.getElementById('edit-time').value.trim(),
         ingredients: document.getElementById('edit-ingredients').value.trim(),

@@ -45,6 +45,7 @@
         <div class="recipe-view">
             <div class="recipe-header">
                 <h1 id="view-title">Recipe Title</h1>
+                <span id="view-category" class="category-badge"></span>
                 <p id="view-source" class="source">From: Grandma</p>
             </div>
             <div class="cooking-info">
@@ -82,6 +83,18 @@
 
             <label>Source (who shared this?)</label>
             <input type="text" id="edit-source" placeholder="Grandma, Pinterest, Mom's friend Sue...">
+
+            <label>Category</label>
+            <select id="edit-category">
+                <option value="">Select a category...</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="appetizer">Appetizer</option>
+                <option value="main">Main Dish</option>
+                <option value="side">Side Dish</option>
+                <option value="dessert">Dessert</option>
+                <option value="drink">Drink</option>
+                <option value="snack">Snack</option>
+            </select>
 
             <div class="cooking-inputs">
                 <div>
