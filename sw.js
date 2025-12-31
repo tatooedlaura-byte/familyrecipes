@@ -1,15 +1,15 @@
 // Simple service worker for offline caching
-const CACHE_NAME = 'family-recipes-v2';
+const CACHE_NAME = 'family-recipes-v3';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/manifest.json',
-    '/icons/icon-64.png',
-    '/icons/icon-180.png',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png'
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './manifest.json',
+    './icons/icon-64.png',
+    './icons/icon-180.png',
+    './icons/icon-192.png',
+    './icons/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
