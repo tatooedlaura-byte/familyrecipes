@@ -1,5 +1,5 @@
 // Simple service worker for offline caching
-const CACHE_NAME = 'family-recipes-v5';
+const CACHE_NAME = 'family-recipes-v6';
 const urlsToCache = [
     './',
     './index.html',

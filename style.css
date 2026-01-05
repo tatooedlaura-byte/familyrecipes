@@ -395,6 +395,15 @@ header h1 {
     line-height: 1.5;
 }
 
+.section .steps-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.section .steps-list li {
+    padding-left: 5px;
+}
+
 /* Edit Form */
 .recipe-form {
     padding: 20px;

@@ -92,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
         currentFilter = 'all';
         showScreen('login');
     });
+
+    // Auto-number steps
+    setupStepsAutoNumber();
 });
 
 function handleLogin() {
@@ -354,4 +357,40 @@ function showToast(message) {
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// Auto-number steps textarea
+function setupStepsAutoNumber() {
+    const stepsTextarea = document.getElementById('edit-steps');
+
+    // When focusing on empty textarea, add "1. "
+    stepsTextarea.addEventListener('focus', () => {
+        if (stepsTextarea.value.trim() === '') {
+            stepsTextarea.value = '1. ';
+        }
+    });
+
+    // When pressing Enter, add next number
+    stepsTextarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+
+            const cursorPos = stepsTextarea.selectionStart;
+            const text = stepsTextarea.value;
+
+            // Count how many lines exist before cursor
+            const textBeforeCursor = text.substring(0, cursorPos);
+            const lineCount = textBeforeCursor.split('\n').length;
+            const nextNumber = lineCount + 1;
+
+            // Insert newline and next number
+            const newText = text.substring(0, cursorPos) + '\n' + nextNumber + '. ' + text.substring(cursorPos);
+            stepsTextarea.value = newText;
+
+            // Move cursor after the number
+            const newCursorPos = cursorPos + 2 + nextNumber.toString().length + 2;
+            stepsTextarea.selectionStart = newCursorPos;
+            stepsTextarea.selectionEnd = newCursorPos;
+        }
+    });
 }
