@@ -1,5 +1,5 @@
 // Simple service worker for offline caching
-const CACHE_NAME = 'family-recipes-v6';
+const CACHE_NAME = 'family-recipes-v7';
 const urlsToCache = [
     './',
     './index.html',
@@ -13,9 +13,29 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+    // Force the new service worker to activate immediately
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(urlsToCache))
+    );
+});
+
+self.addEventListener('activate', event => {
+    // Delete all old caches
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => {
+            // Take control of all pages immediately
+            return self.clients.claim();
+        })
     );
 });
 
