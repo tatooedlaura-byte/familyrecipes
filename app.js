@@ -98,19 +98,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function handleLogin() {
-    const password = document.getElementById('password-input').value;
-    const errorEl = document.getElementById('login-error');
+      const password = document.getElementById('password-input').value;
+      const errorEl = document.getElementById('login-error');
 
-    if (password === FAMILY_PASSWORD) {
-        sessionStorage.setItem('familyAuth', 'true');
-        showScreen('main');
-        loadRecipes();
-        errorEl.textContent = '';
-    } else {
-        errorEl.textContent = 'Incorrect password. Try again!';
-        document.getElementById('password-input').value = '';
-    }
-}
+      if (password === FAMILY_PASSWORD) {
+          // Sign in to Firebase anonymously
+          firebase.auth().signInAnonymously()
+              .then(() => {
+                  sessionStorage.setItem('familyAuth', 'true');
+                  showScreen('main');
+                  loadRecipes();
+                  errorEl.textContent = '';
+              })
+              .catch((error) => {
+                  errorEl.textContent = 'Login failed: ' + error.message;
+              });
+      } else {
+          errorEl.textContent = 'Incorrect password. Try again!';
+          document.getElementById('password-input').value = '';
+      }
+  }
+
 
 function showScreen(screenName) {
     Object.values(screens).forEach(screen => screen.classList.remove('active'));
