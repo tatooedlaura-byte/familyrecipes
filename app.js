@@ -162,6 +162,9 @@ function loadRecipes() {
     database.ref(getRecipesPath()).on('value', (snapshot) => {
         recipes = snapshot.val() || {};
         renderRecipeList();
+    }, (error) => {
+        console.error('Firebase error:', error);
+        listEl.innerHTML = `<div class="empty-state"><p>Error loading recipes: ${error.message}</p></div>`;
     });
 }
 
