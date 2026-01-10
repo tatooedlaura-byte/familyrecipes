@@ -94,8 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
+        // Detach database listeners
+        database.ref('recipes').off();
+        database.ref('personal-recipes').off();
+        // Sign out from Firebase
+        firebase.auth().signOut();
+        // Clear session
         sessionStorage.removeItem('familyAuth');
+        sessionStorage.removeItem('recipeMode');
         currentFilter = 'all';
+        currentMode = 'family';
+        recipes = {};
         showScreen('login');
     });
 
