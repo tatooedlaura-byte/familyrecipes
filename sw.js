@@ -1,5 +1,5 @@
 // Simple service worker for offline caching
-const CACHE_NAME = 'family-recipes-v10';
+const CACHE_NAME = 'family-recipes-v11';
 const urlsToCache = [
     './',
     './index.html',
@@ -41,7 +41,17 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
+        fetch(event.request)
+            .then(response => {
+                // Cache the fresh response
+                if (response.status === 200) {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseClone);
+                    });
+                }
+                return response;
+            })
+            .catch(() => caches.match(event.request))
     );
 });
