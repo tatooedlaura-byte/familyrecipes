@@ -146,7 +146,7 @@ function getRecipesPath() {
 function updateModeIndicator() {
     const header = document.querySelector('.header h1');
     if (currentMode === 'personal') {
-        header.textContent = 'My Recipes';
+        header.textContent = 'Personal Recipes';
         header.style.color = '#9b59b6';
     } else {
         header.textContent = 'Family Recipes';
