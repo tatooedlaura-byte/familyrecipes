@@ -147,7 +147,6 @@ function updateModeIndicator() {
     const header = document.getElementById('main-title');
     if (header) {
         header.textContent = currentMode === 'personal' ? 'Personal Recipes' : 'Family Recipes';
-        header.style.color = currentMode === 'personal' ? '#9b59b6' : '';
     }
 }
 
