@@ -29,8 +29,12 @@ const categoryInfo = {
     snack: { emoji: '🍿', name: 'Snack' }
 };
 
-// Family password - change this to your family password
+// Passwords - change these to your own passwords
 const FAMILY_PASSWORD = "recipes123";
+const PERSONAL_PASSWORD = "recipes1013";
+
+// Current mode: 'family' or 'personal'
+let currentMode = 'family';
 
 // DOM Elements
 const screens = {
@@ -44,8 +48,10 @@ const screens = {
 document.addEventListener('DOMContentLoaded', () => {
     // Check if already logged in
     if (sessionStorage.getItem('familyAuth') === 'true') {
+        currentMode = sessionStorage.getItem('recipeMode') || 'family';
         showScreen('main');
         loadRecipes();
+        updateModeIndicator();
     }
 
     // Login
@@ -98,27 +104,46 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function handleLogin() {
-      const password = document.getElementById('password-input').value;
-      const errorEl = document.getElementById('login-error');
+    const password = document.getElementById('password-input').value;
+    const errorEl = document.getElementById('login-error');
 
-      if (password === FAMILY_PASSWORD) {
-          // Sign in to Firebase anonymously
-          firebase.auth().signInAnonymously()
-              .then(() => {
-                  sessionStorage.setItem('familyAuth', 'true');
-                  showScreen('main');
-                  loadRecipes();
-                  errorEl.textContent = '';
-              })
-              .catch((error) => {
-                  errorEl.textContent = 'Login failed: ' + error.message;
-              });
-      } else {
-          errorEl.textContent = 'Incorrect password. Try again!';
-          document.getElementById('password-input').value = '';
-      }
-  }
+    if (password === FAMILY_PASSWORD || password === PERSONAL_PASSWORD) {
+        // Set mode based on password
+        currentMode = password === PERSONAL_PASSWORD ? 'personal' : 'family';
 
+        // Sign in to Firebase anonymously
+        firebase.auth().signInAnonymously()
+            .then(() => {
+                sessionStorage.setItem('familyAuth', 'true');
+                sessionStorage.setItem('recipeMode', currentMode);
+                showScreen('main');
+                loadRecipes();
+                updateModeIndicator();
+                errorEl.textContent = '';
+            })
+            .catch((error) => {
+                errorEl.textContent = 'Login failed: ' + error.message;
+            });
+    } else {
+        errorEl.textContent = 'Incorrect password. Try again!';
+        document.getElementById('password-input').value = '';
+    }
+}
+
+function getRecipesPath() {
+    return currentMode === 'personal' ? 'personal-recipes' : 'recipes';
+}
+
+function updateModeIndicator() {
+    const header = document.querySelector('.header h1');
+    if (currentMode === 'personal') {
+        header.textContent = 'My Recipes';
+        header.style.color = '#9b59b6';
+    } else {
+        header.textContent = 'Family Recipes';
+        header.style.color = '';
+    }
+}
 
 function showScreen(screenName) {
     Object.values(screens).forEach(screen => screen.classList.remove('active'));
@@ -130,7 +155,11 @@ function loadRecipes() {
     const listEl = document.getElementById('recipe-list');
     listEl.innerHTML = '<div class="loading">Loading recipes...</div>';
 
-    database.ref('recipes').on('value', (snapshot) => {
+    // Detach any previous listener
+    database.ref('recipes').off();
+    database.ref('personal-recipes').off();
+
+    database.ref(getRecipesPath()).on('value', (snapshot) => {
         recipes = snapshot.val() || {};
         renderRecipeList();
     });
@@ -307,13 +336,14 @@ function saveRecipe() {
     };
 
     let saveRef;
+    const basePath = getRecipesPath();
     if (currentRecipeId) {
         // Update existing
-        saveRef = database.ref('recipes/' + currentRecipeId).update(recipeData);
+        saveRef = database.ref(basePath + '/' + currentRecipeId).update(recipeData);
     } else {
         // Create new
         recipeData.createdAt = Date.now();
-        saveRef = database.ref('recipes').push(recipeData);
+        saveRef = database.ref(basePath).push(recipeData);
         currentRecipeId = saveRef.key;
     }
 
@@ -328,12 +358,16 @@ function saveRecipe() {
 function deleteRecipe() {
     if (!currentRecipeId) return;
 
-    const password = prompt('Enter the family password to delete this recipe:');
+    const promptText = currentMode === 'personal'
+        ? 'Enter your password to delete this recipe:'
+        : 'Enter the family password to delete this recipe:';
+    const password = prompt(promptText);
 
     if (password === null) return; // User cancelled
 
-    if (password === FAMILY_PASSWORD) {
-        database.ref('recipes/' + currentRecipeId).remove()
+    const correctPassword = currentMode === 'personal' ? PERSONAL_PASSWORD : FAMILY_PASSWORD;
+    if (password === correctPassword) {
+        database.ref(getRecipesPath() + '/' + currentRecipeId).remove()
             .then(() => {
                 currentRecipeId = null;
                 showToast('Recipe deleted');
