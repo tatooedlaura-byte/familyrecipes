@@ -144,15 +144,10 @@ function getRecipesPath() {
 }
 
 function updateModeIndicator() {
-    const header = document.querySelector('#main-screen header h1');
+    const header = document.getElementById('main-title');
     if (header) {
-        if (currentMode === 'personal') {
-            header.textContent = 'Personal Recipes';
-            header.style.color = '#9b59b6';
-        } else {
-            header.textContent = 'Family Recipes';
-            header.style.color = '';
-        }
+        header.textContent = currentMode === 'personal' ? 'Personal Recipes' : 'Family Recipes';
+        header.style.color = currentMode === 'personal' ? '#9b59b6' : '';
     }
 }
 
